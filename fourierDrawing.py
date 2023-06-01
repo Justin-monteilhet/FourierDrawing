@@ -1,13 +1,14 @@
 import tkinter as tk
+import setup
 import matplotlib.pyplot as plt
 import time
 from cmath import exp
 
 PI = 3.141592653589793238462643383279502884197169399375105820974944592307
-        
+
 
 class App(tk.Tk):
-    iterations = 250
+    iterations = setup.iterations
     
     def __init__(self) -> None:
         super().__init__()
@@ -81,7 +82,11 @@ class App(tk.Tk):
         
         self.canvas.delete("all")
         POINTS = 1000
-        shapes = [(self.canvas.create_line(0, 0, 0, 0, fill="red"), self.canvas.create_oval(0, 0, 0, 0, outline="green")) for _ in range(len(coeffs))]
+        if setup.showCircles:
+            shapes = [(self.canvas.create_line(0, 0, 0, 0, fill="red"), self.canvas.create_oval(0, 0, 0, 0, outline="green")) for _ in range(len(coeffs))]
+        else:
+            shapes = [(self.canvas.create_line(0, 0, 0, 0, fill="red")) for _ in range(len(coeffs))]
+            
         # create all lines and cricles and store in a list
         
         last_point = fourier(0)
@@ -97,26 +102,29 @@ class App(tk.Tk):
                 updated_sum = partial_sum + coeffs[ordered_i]*exp(2*PI*t*(ordered_i-self.iterations)*1j)
                 # update with canva.coords(obj, x0, y0, ...)
                 # circles : middle = last line's coords ; radius = abs(coeffs)
-                line, circle = shapes[i]
+                line = shapes[i]
+                if setup.showCircles:
+                    line, circle = shapes[i]
                 self.canvas.coords(line, partial_sum.real, partial_sum.imag, updated_sum.real, updated_sum.imag)
                 
-                radius = abs(coeffs[ordered_i])
-                self.canvas.coords(circle, partial_sum.real-radius, partial_sum.imag-radius, partial_sum.real+radius, partial_sum.imag+radius)
-                
+                if setup.showCircles:
+                    radius = abs(coeffs[ordered_i])
+                    self.canvas.coords(circle, partial_sum.real-radius, partial_sum.imag-radius, partial_sum.real+radius, partial_sum.imag+radius)
+                    
                 partial_sum = updated_sum
                 
             pred = fourier(t)
             self.canvas.create_line(last_point.real, last_point.imag, pred.real, pred.imag)
             
             last_point = pred
-            
-            delta = time.time() - start
-            #time.sleep(max(0, 10/POINTS - delta))
+
             self.canvas.update()
 
-        for line, circle in shapes:
-            self.canvas.delete(line, circle)
-
+        if setup.showCircles:
+            for line, circle in shapes : self.canvas.delete(line, circle)
+        else:
+            for line in shapes : self.canvas.delete(line)
+            
 if __name__ == '__main__':
     app =  App()
     app.main()
