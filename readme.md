@@ -16,5 +16,6 @@ All you have to do is to have python installed, tkinter comes built-in. Run ``py
 
 As continuous fonctions, the Fourier Series used to make the circles are very bad at replicating anything that is made of more than one unique line. They are however very good at drawing complicated one-line shapes.
 
-By default, the software uses 501 circles (250 clockwise, 250 anti-clockwise, 1 constant). Feel free to add or remove circles by editing the ``App.iterations`` variable in the python file. It represents the number of clockwise circles and is thus set to 250 by default.
+By default, the software uses 501 circles (250 clockwise, 250 anti-clockwise, 1 constant). 
+You can change parameters in ``setup.py``, iterations being the number of clockwise rotating cirles, and showCircles being wether or not showing the cycles during the Fourier drawing phase.
 
